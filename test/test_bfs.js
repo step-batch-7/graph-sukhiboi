@@ -13,8 +13,8 @@ describe('#bfs()', () => {
     it('should return true if path available between distinct nodes', () => {
       assert.isTrue(bfs(pairs, 1, 2));
     });
-    it('should return true if given node is searched', () => {
-      assert.isTrue(bfs(pairs, 1, 1));
+    it('should return false if given node is searched', () => {
+      assert.isFalse(bfs(pairs, 1, 1));
     });
   });
 
@@ -22,6 +22,17 @@ describe('#bfs()', () => {
     it('should return true if the given node is searched', () => {
       const pairs = [[1, 1]];
       assert.isTrue(bfs(pairs, 1, 1));
+    });
+  });
+
+  describe('single node not connected to itself', () => {
+    it('should return false if the given node is searched', () => {
+      const pairs = [
+        [1, 2],
+        [2, 3],
+        [3, 1],
+      ];
+      assert.isFalse(bfs(pairs, 1, 1));
     });
   });
 });
