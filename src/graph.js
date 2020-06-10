@@ -1,16 +1,7 @@
-//Example
-// Pairs => [[from,to],[to,from]]
-// Source => from
-// To => to
-// Should return true.
 const Queue = require('./queue');
 
 const getChildren = function (pairs, node) {
-  return pairs.reduce((children, pair) => {
-    const [from, to] = pair;
-    if (from === node) return [...children, to];
-    return children;
-  }, []);
+  return pairs.filter(([from]) => from === node).map(([, to]) => to);
 };
 
 const bfs = function (pairs, source, target) {
@@ -21,10 +12,10 @@ const bfs = function (pairs, source, target) {
     const node = to_visit.dequeue();
     visited.enqueue(node);
     const children = getChildren(pairs, node);
+    if (node === target) return true;
     children.forEach((child) => {
       if (!visited.isElementAvailable(child)) to_visit.enqueue(child);
     });
-    if (node === target) return true;
   }
   return false;
 };

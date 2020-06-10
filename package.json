@@ -1,0 +1,17 @@
+{
+  "name": "graph",
+  "version": "1.0.0",
+  "description": "",
+  "main": "graph.js",
+  "scripts": {
+    "test": "nyc mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.2.0",
+    "nyc": "^15.1.0"
+  }
+}
