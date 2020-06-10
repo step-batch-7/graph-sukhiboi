@@ -5,17 +5,17 @@ const getChildren = function (pairs, node) {
 };
 
 const bfs = function (pairs, source, target) {
-  const visited = new Queue();
+  const visited = new Set();
   const to_visit = new Queue();
-  visited.enqueue(source);
+  visited.add(source);
   to_visit.enqueue(source);
   while (!to_visit.isEmpty()) {
     const current = to_visit.dequeue();
+    visited.add(current);
     if (current === target) return true;
     const children = getChildren(pairs, current);
     for (const child of children) {
-      if (!visited.isElementAvailable(child)) {
-        visited.enqueue(child);
+      if (!visited.has(child)) {
         to_visit.enqueue(child);
       }
     }
