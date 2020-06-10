@@ -10,6 +10,14 @@ class Queue {
   dequeue() {
     return this.queue.shift();
   }
+
+  isElementAvailable(element) {
+    return this.queue.includes(element);
+  }
+
+  isEmpty() {
+    return !Boolean(this.queue.length);
+  }
 }
 
 module.exports = Queue;
