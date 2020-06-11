@@ -24,11 +24,4 @@ describe('#bfs()', () => {
       assert.isTrue(bfs(pairs, 1, 1));
     });
   });
-
-  describe('single node not connected to itself', () => {
-    it('should return false if the given node is searched', () => {
-      const pairs = [[1, 2]];
-      assert.isFalse(bfs(pairs, 1, 1));
-    });
-  });
 });

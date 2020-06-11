@@ -4,12 +4,11 @@ const getChildren = function (pairs, node) {
 
 const bfs = function (pairs, source, target) {
   const visited = new Set();
-  const to_visit = [];
-  to_visit.push(source);
+  const to_visit = [source];
   while (to_visit.length > 0) {
     const current = to_visit.shift();
-    visited.add(current);
     if (current === target) return true;
+    visited.add(current);
     const children = getChildren(pairs, current);
     for (const child of children) if (!visited.has(child)) to_visit.push(child);
   }
