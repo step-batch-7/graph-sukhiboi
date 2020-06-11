@@ -2,24 +2,6 @@ const getNeighbors = function (pairs, [source]) {
   return pairs.filter(([from]) => from === source).map(([, to]) => to);
 };
 
-class Queue {
-  constructor() {
-    this.queue = [];
-  }
-
-  enqueue(element) {
-    this.queue.push(element);
-  }
-
-  dequeue() {
-    return this.queue.shift();
-  }
-
-  get isEmpty() {
-    return !Boolean(this.queue.length);
-  }
-}
-
 class Graph {
   constructor() {
     this.connections = {};
@@ -50,17 +32,17 @@ class Graph {
 
 const bfs = function (pairs, source, target) {
   const visited = new Set();
-  const to_visit = new Queue();
-  to_visit.enqueue(source);
+  const to_visit = [];
+  to_visit.push(source);
   const graph = Graph.init(pairs);
 
-  while (!to_visit.isEmpty) {
-    const current = to_visit.dequeue();
+  while (to_visit.length > 0) {
+    const current = to_visit.shift();
     if (graph.areNodesConnected(current, target)) return true;
     visited.add(current);
 
     graph.getNeighbors(current).forEach((neighbor) => {
-      if (!visited.has(neighbor)) to_visit.enqueue(neighbor);
+      if (!visited.has(neighbor)) to_visit.push(neighbor);
     });
   }
   return false;
