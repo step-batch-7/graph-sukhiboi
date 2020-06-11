@@ -19,7 +19,7 @@ describe('#bfs()', () => {
   });
 
   describe('single node connected to itself', () => {
-    it.skip('should return true if the given node is searched', () => {
+    it('should return true if the given node is searched', () => {
       const pairs = [[1, 1]];
       assert.isTrue(bfs(pairs, 1, 1));
     });
