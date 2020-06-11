@@ -15,7 +15,7 @@ class Queue {
     return this.queue.shift();
   }
 
-  isEmpty() {
+  get isEmpty() {
     return !Boolean(this.queue.length);
   }
 }
@@ -25,7 +25,7 @@ class Graph {
     this.connections = {};
   }
 
-  areNodeConnected(source, dest) {
+  areNodesConnected(source, dest) {
     const sourceConnections = this.connections[source];
     if (sourceConnections) return sourceConnections.includes(dest);
     return false;
@@ -54,9 +54,9 @@ const bfs = function (pairs, source, target) {
   to_visit.enqueue(source);
   const graph = Graph.init(pairs);
 
-  while (!to_visit.isEmpty()) {
+  while (!to_visit.isEmpty) {
     const current = to_visit.dequeue();
-    if (graph.areNodeConnected(current, target)) return true;
+    if (graph.areNodesConnected(current, target)) return true;
     visited.add(current);
 
     graph.getNeighbors(current).forEach((neighbor) => {
