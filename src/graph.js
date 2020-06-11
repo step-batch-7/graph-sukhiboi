@@ -1,7 +1,3 @@
-const getNeighbors = function (pairs, [source]) {
-  return pairs.filter(([from]) => from === source).map(([, to]) => to);
-};
-
 class Graph {
   constructor() {
     this.connections = {};
@@ -22,8 +18,11 @@ class Graph {
   static init(pairs) {
     const graph = new Graph();
     graph.connections = pairs.reduce((graph, pair) => {
-      const [from] = pair;
-      if (graph[from] == undefined) graph[from] = getNeighbors(pairs, pair);
+      const [source] = pair;
+      const neighbors = pairs
+        .filter(([from]) => from === source)
+        .map(([, to]) => to);
+      if (graph[source] == undefined) graph[source] = neighbors;
       return graph;
     }, {});
     return graph;
