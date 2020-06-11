@@ -1,4 +1,4 @@
-const getChildren = function (pairs, [source]) {
+const getNeighbors = function (pairs, [source]) {
   return pairs.filter(([from]) => from === source).map(([, to]) => to);
 };
 
@@ -31,7 +31,7 @@ class Graph {
     return false;
   }
 
-  getChildren(node) {
+  getNeighbors(node) {
     const nodeConnections = this.connections[node];
     if (nodeConnections) return nodeConnections;
     return [];
@@ -41,7 +41,7 @@ class Graph {
     const graph = new Graph();
     graph.connections = pairs.reduce((graph, pair) => {
       const [from] = pair;
-      if (graph[from] == undefined) graph[from] = getChildren(pairs, pair);
+      if (graph[from] == undefined) graph[from] = getNeighbors(pairs, pair);
       return graph;
     }, {});
     return graph;
@@ -58,9 +58,9 @@ const bfs = function (pairs, source, target) {
     const current = to_visit.dequeue();
     if (graph.areNodeConnected(current, target)) return true;
     visited.add(current);
-    
-    graph.getChildren(current).forEach((child) => {
-      if (!visited.has(child)) to_visit.enqueue(child);
+
+    graph.getNeighbors(current).forEach((neighbor) => {
+      if (!visited.has(neighbor)) to_visit.enqueue(neighbor);
     });
   }
   return false;
