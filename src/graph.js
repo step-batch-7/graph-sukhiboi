@@ -54,19 +54,19 @@ const findPath = function (graph, visited, source, target) {
   const neighbors = graph
     .getNeighbors(source)
     .filter((neighbor) => !visited.has(neighbor));
+  if (graph.areNodesConnected(source, target)) return [target];
   for (neighbor of neighbors) {
     const result = findPath(graph, visited, neighbor, target);
     if (result) return [source, ...result];
   }
-  if (neighbors.includes(target)) return [source, target];
 };
 
 const main = function () {
   const graph = Graph.init(largeTestData);
-  const source = 'jj';
+  const source = 'mm';
   const target = 'aa';
   console.log(bfs(largeTestData, source, target));
-  const path = findPath(graph, new Set(), 'jj', 'aa');
+  const path = findPath(graph, new Set(), source, target);
   console.log(path);
 };
 
