@@ -57,7 +57,7 @@ const findPath = function (graph, visited, source, target) {
   if (graph.areNodesConnected(source, target)) return [source, target];
   for (neighbor of neighbors) {
     const result = findPath(graph, visited, neighbor, target);
-    if (result) return [source, ...result];
+    if (result.length) return [source, ...result];
   }
   return [];
 };
