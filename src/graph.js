@@ -1,3 +1,5 @@
+const largeTestData = require('./../test/testData.json');
+
 class Graph {
   constructor() {
     this.connections = {};
@@ -47,4 +49,27 @@ const bfs = function (pairs, source, target) {
   return false;
 };
 
-module.exports = { bfs };
+const findPath = function (graph, visited, source, target) {
+  visited.add(source);
+  const neighbors = graph
+    .getNeighbors(source)
+    .filter((neighbor) => !visited.has(neighbor));
+  for (neighbor of neighbors) {
+    const result = findPath(graph, visited, neighbor, target);
+    if (result) return [source, ...result];
+  }
+  if (neighbors.includes(target)) return [source, target];
+};
+
+const main = function () {
+  const graph = Graph.init(largeTestData);
+  const source = 'jj';
+  const target = 'aa';
+  console.log(bfs(largeTestData, source, target));
+  const path = findPath(graph, new Set(), 'jj', 'aa');
+  console.log(path);
+};
+
+main();
+
+module.exports = { bfs, findPath };
