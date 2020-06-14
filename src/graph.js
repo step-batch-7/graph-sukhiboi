@@ -54,11 +54,12 @@ const findPath = function (graph, visited, source, target) {
   const neighbors = graph
     .getNeighbors(source)
     .filter((neighbor) => !visited.has(neighbor));
-  if (graph.areNodesConnected(source, target)) return [target];
+  if (graph.areNodesConnected(source, target)) return [source, target];
   for (neighbor of neighbors) {
     const result = findPath(graph, visited, neighbor, target);
     if (result) return [source, ...result];
   }
+  return [];
 };
 
 const main = function () {
@@ -72,4 +73,4 @@ const main = function () {
 
 main();
 
-module.exports = { bfs, findPath };
+module.exports = { Graph, bfs, findPath };
