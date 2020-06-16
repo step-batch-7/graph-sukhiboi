@@ -7,25 +7,28 @@ class Graph {
 
   areNodesConnected(source, dest) {
     const sourceConnections = this.connections[source];
-    if (sourceConnections) return sourceConnections.includes(dest);
+    if (sourceConnections) return Object.keys(sourceConnections).includes(dest);
     return false;
   }
 
   getNeighbors(node) {
     const nodeConnections = this.connections[node];
-    if (nodeConnections) return nodeConnections;
+    if (nodeConnections) return Object.keys(nodeConnections);
     return [];
   }
 
   static init(pairs) {
     const graph = new Graph();
-    graph.connections = pairs.reduce((graph, pair) => {
-      const [source] = pair;
-      const neighbors = pairs
-        .filter(([from]) => from === source)
-        .map(([, to]) => to);
-      if (graph[source] == undefined) graph[source] = neighbors;
-      return graph;
+    graph.connections = pairs.reduce((data, [source]) => {
+      const connections = pairs
+        .filter(([from]) => from == source)
+        .reduce((connections, [, to, weight]) => {
+          connections[to] = weight;
+          return connections;
+        }, {});
+      const isSourceIncluded = Object.keys(data).includes(source);
+      if (!isSourceIncluded) data[source] = connections;
+      return data;
     }, {});
     return graph;
   }
@@ -42,7 +45,8 @@ const bfs = function (pairs, source, target) {
     if (graph.areNodesConnected(current, target)) return true;
     visited.add(current);
 
-    graph.getNeighbors(current).forEach((neighbor) => {
+    const neighbors = graph.getNeighbors(current);
+    neighbors.forEach((neighbor) => {
       if (!visited.has(neighbor)) to_visit.push(neighbor);
     });
   }
@@ -51,9 +55,8 @@ const bfs = function (pairs, source, target) {
 
 const findPath = function (graph, visited, source, target) {
   visited.add(source);
-  const neighbors = graph
-    .getNeighbors(source)
-    .filter((neighbor) => !visited.has(neighbor));
+  const connections = graph.getNeighbors(source);
+  const neighbors = connections.filter((neighbor) => !visited.has(neighbor));
   if (graph.areNodesConnected(source, target)) return [source, target];
   for (neighbor of neighbors) {
     const result = findPath(graph, visited, neighbor, target);
