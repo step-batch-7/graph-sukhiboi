@@ -1,14 +1,15 @@
 const assert = require('chai').assert;
-const { Graph, getMST } = require('./../src/graph');
+const { Graph, getMST, getMSTByKruskal } = require('./../src/graph');
 
 describe('getMST', () => {
-  it('should get the minium spanning tree from sparsely connected nodes', () => {
+  it('should get the minium spanning tree from sparsely connected nodes from both the algorithms', () => {
     const pairs = [
       ['a', 'b', 5],
       ['a', 'c', 8],
       ['b', 'c', 3],
       ['b', 'd', 1],
       ['b', 'e', 2],
+      ['b', 'a', 5],
       ['c', 'd', 1],
       ['c', 'b', 3],
       ['c', 'a', 8],
@@ -28,10 +29,18 @@ describe('getMST', () => {
       { source: 'b', vertex: 'e', weight: 2 },
       { source: 'e', vertex: 'f', weight: 2 },
     ];
+    const kruskalExpectation = [
+      { source: 'b', vertex: 'd', weight: 1 },
+      { source: 'c', vertex: 'd', weight: 1 },
+      { source: 'b', vertex: 'e', weight: 2 },
+      { source: 'e', vertex: 'f', weight: 2 },
+      { source: 'a', vertex: 'b', weight: 5 },
+    ];
     assert.deepStrictEqual(getMST(graph), expectation);
+    assert.deepStrictEqual(getMSTByKruskal(graph), kruskalExpectation);
   });
 
-  it('should description get minium spanning tree from densely connected small amount of nodes', () => {
+  it('should get minium spanning tree from densely connected small amount of nodes from both the algorithms', () => {
     const pairs = [
       ['a', 'b', 5],
       ['a', 'a', 8],
@@ -54,6 +63,12 @@ describe('getMST', () => {
       { source: 'b', vertex: 'c', weight: 4 },
       { source: 'c', vertex: 'd', weight: 5 },
     ];
+    const kruskalExpectation = [
+      { source: 'b', vertex: 'c', weight: 4 },
+      { source: 'a', vertex: 'b', weight: 5 },
+      { source: 'c', vertex: 'd', weight: 5 },
+    ];
     assert.deepStrictEqual(getMST(graph), expectation);
+    assert.deepStrictEqual(getMSTByKruskal(graph), kruskalExpectation);
   });
 });

@@ -1,5 +1,3 @@
-const largeTestData = require('./../test/testData.json');
-
 class Graph {
   constructor() {
     this.connections = {};
@@ -16,6 +14,17 @@ class Graph {
     const nodeConnections = this.connections[node];
     if (nodeConnections) return nodeConnections;
     return [];
+  }
+
+  getEdges() {
+    const edges = Object.keys(this.connections).reduce((edges, edge) => {
+      const neighbors = this.getNeighbors(edge);
+      const closeEdges = neighbors.reduce((closeEdges, { vertex, weight }) => {
+        return [...closeEdges, { source: edge, vertex, weight }];
+      }, []);
+      return [...edges, ...closeEdges];
+    }, []);
+    return edges;
   }
 
   static init(pairs) {
@@ -86,4 +95,28 @@ const getMST = function (graph) {
   return tree;
 };
 
-module.exports = { Graph, bfs, findPath, getMST };
+const getMSTByKruskal = function (graph) {
+  const edges = graph.getEdges();
+  const sortedEdges = edges.sort((a, b) => a.weight - b.weight);
+  const mst = [];
+
+  const creteCycle = function (tree, edge) {
+    const isSelfLoop = edge.source === edge.vertex;
+    if (isSelfLoop) return true;
+    const isSourceAvailable = tree.some(({ source, vertex }) => {
+      return source === edge.source || vertex === edge.source;
+    });
+    const isVertexAvailable = tree.some(({ source, vertex }) => {
+      return source === edge.vertex || vertex === edge.vertex;
+    });
+    return isSourceAvailable && isVertexAvailable;
+  };
+
+  while (sortedEdges.length) {
+    const edge = sortedEdges.shift();
+    if (!creteCycle(mst, edge)) mst.push(edge);
+  }
+  return mst;
+};
+
+module.exports = { Graph, bfs, findPath, getMST, getMSTByKruskal };
