@@ -64,15 +64,26 @@ const findPath = function (graph, visited, source, target) {
   return [];
 };
 
-const main = function () {
-  const graph = Graph.init(largeTestData);
-  const source = 'mm';
-  const target = 'aa';
-  console.log(bfs(largeTestData, source, target));
-  const path = findPath(graph, new Set(), source, target);
-  console.log(path);
+const getMST = function (graph) {
+  const toVisit = Object.keys(graph.connections);
+  const visited = [toVisit.shift()];
+  const tree = [];
+
+  while (toVisit.length) {
+    let closestNode = { weight: Infinity };
+    for (node of visited) {
+      const neighbors = graph
+        .getNeighbors(node)
+        .filter((neighbor) => toVisit.includes(neighbor.vertex));
+      for (neighbor of neighbors)
+        if (neighbor.weight < closestNode.weight)
+          closestNode = { source: node, ...neighbor };
+    }
+    visited.push(closestNode.vertex);
+    tree.push(closestNode);
+    toVisit.splice(toVisit.indexOf(closestNode.vertex), 1);
+  }
+  return tree;
 };
 
-main();
-
-module.exports = { Graph, bfs, findPath };
+module.exports = { Graph, bfs, findPath, getMST };

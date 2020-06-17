@@ -2,7 +2,7 @@ const assert = require('chai').assert;
 const { bfs } = require('./../src/graph');
 const largeTestData = require('./testData.json');
 
-describe('#bfs()', () => {
+describe('bfs', () => {
   describe('nodes sparsely connected', () => {
     const pairs = [
       ['1', '2', '22'],
