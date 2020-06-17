@@ -7,13 +7,14 @@ class Graph {
 
   areNodesConnected(source, dest) {
     const sourceConnections = this.connections[source];
-    if (sourceConnections) return Object.keys(sourceConnections).includes(dest);
+    if (sourceConnections)
+      return sourceConnections.map((node) => node.vertex).includes(dest);
     return false;
   }
 
   getNeighbors(node) {
     const nodeConnections = this.connections[node];
-    if (nodeConnections) return Object.keys(nodeConnections);
+    if (nodeConnections) return nodeConnections;
     return [];
   }
 
@@ -23,9 +24,8 @@ class Graph {
       const connections = pairs
         .filter(([from]) => from == source)
         .reduce((connections, [, to, weight]) => {
-          connections[to] = weight;
-          return connections;
-        }, {});
+          return [...connections, { vertex: to, weight }];
+        }, []);
       const isSourceIncluded = Object.keys(data).includes(source);
       if (!isSourceIncluded) data[source] = connections;
       return data;
@@ -44,8 +44,7 @@ const bfs = function (pairs, source, target) {
     const current = to_visit.shift();
     if (graph.areNodesConnected(current, target)) return true;
     visited.add(current);
-
-    const neighbors = graph.getNeighbors(current);
+    const neighbors = graph.getNeighbors(current).map((node) => node.vertex);
     neighbors.forEach((neighbor) => {
       if (!visited.has(neighbor)) to_visit.push(neighbor);
     });
@@ -55,7 +54,7 @@ const bfs = function (pairs, source, target) {
 
 const findPath = function (graph, visited, source, target) {
   visited.add(source);
-  const connections = graph.getNeighbors(source);
+  const connections = graph.getNeighbors(source).map((node) => node.vertex);
   const neighbors = connections.filter((neighbor) => !visited.has(neighbor));
   if (graph.areNodesConnected(source, target)) return [source, target];
   for (neighbor of neighbors) {
