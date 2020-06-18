@@ -100,7 +100,7 @@ const getMSTByKruskal = function (graph) {
   const sortedEdges = edges.sort((a, b) => a.weight - b.weight);
   const mst = [];
 
-  const creteCycle = function (tree, edge) {
+  const doesMakeTreeCyclic = function (tree, edge) {
     const isSelfLoop = edge.source === edge.vertex;
     if (isSelfLoop) return true;
     const isSourceAvailable = tree.some(({ source, vertex }) => {
@@ -114,9 +114,60 @@ const getMSTByKruskal = function (graph) {
 
   while (sortedEdges.length) {
     const edge = sortedEdges.shift();
-    if (!creteCycle(mst, edge)) mst.push(edge);
+    if (!doesMakeTreeCyclic(mst, edge)) mst.push(edge);
   }
   return mst;
 };
 
-module.exports = { Graph, bfs, findPath, getMST, getMSTByKruskal };
+const getClosestVertex = function (table, visited) {
+  return Object.keys(table).reduce(
+    (cNode, node) => {
+      if (!visited.includes(node) && table[node].distance < cNode.distance)
+        return table[node];
+      return cNode;
+    },
+    { distance: Infinity }
+  );
+};
+
+const getShortestPath = function (table, target) {
+  while (table[target].previousNode == null) return [target];
+  return [...getShortestPath(table, table[target].previousNode), target];
+};
+
+const findShortestPath = function (graph, source, target) {
+  const table = Object.keys(graph.connections).reduce((table, vertex) => {
+    const distance = vertex === source ? 0 : Infinity;
+    table[vertex] = { vertex, distance, previousNode: null };
+    return table;
+  }, {});
+  const toVisit = Object.keys(graph.connections);
+  const visited = [];
+  while (toVisit.length) {
+    const { vertex, distance } = getClosestVertex(table, visited);
+
+    const neighbors = graph
+      .getNeighbors(vertex)
+      .filter((neighbor) => toVisit.includes(neighbor.vertex));
+
+    for (neighbor of neighbors) {
+      const distanceFromSource = table[vertex].distance + neighbor.weight;
+      if (distanceFromSource < table[neighbor.vertex].distance) {
+        table[neighbor.vertex].distance = distance + neighbor.weight;
+        table[neighbor.vertex].previousNode = vertex;
+      }
+    }
+    visited.push(vertex);
+    toVisit.splice(toVisit.indexOf(vertex), 1);
+  }
+  return getShortestPath(table, target);
+};
+
+module.exports = {
+  Graph,
+  bfs,
+  findPath,
+  getMST,
+  getMSTByKruskal,
+  findShortestPath,
+};
