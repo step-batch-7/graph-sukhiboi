@@ -151,7 +151,7 @@ const findShortestPath = function (graph, source, target) {
       .filter((neighbor) => toVisit.includes(neighbor.vertex));
 
     for (neighbor of neighbors) {
-      const distanceFromSource = table[vertex].distance + neighbor.weight;
+      const distanceFromSource = distance + neighbor.weight;
       if (distanceFromSource < table[neighbor.vertex].distance) {
         table[neighbor.vertex].distance = distance + neighbor.weight;
         table[neighbor.vertex].previousNode = vertex;
