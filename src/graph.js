@@ -95,21 +95,34 @@ const getMST = function (graph) {
   return tree;
 };
 
+const findSet = function (sets, vertex) {
+  const setName = Object.keys(sets).find((setName) =>
+    sets[setName].has(vertex)
+  );
+  return setName;
+};
+
+const mergeSet = function (sets, set1, set2) {
+  const newSet = new Set([...sets[set1], ...sets[set2]]);
+  delete sets[set2];
+  sets[set1] = newSet;
+};
+
 const getMSTByKruskal = function (graph) {
   const edges = graph.getEdges();
   const sortedEdges = edges.sort((a, b) => a.weight - b.weight);
   const mst = [];
+  const sets = {};
+  for (vertex of Object.keys(graph.connections)) sets[vertex] = new Set(vertex);
 
   const doesMakeTreeCyclic = function (tree, edge) {
     const isSelfLoop = edge.source === edge.vertex;
     if (isSelfLoop) return true;
-    const isSourceAvailable = tree.some(({ source, vertex }) => {
-      return source === edge.source || vertex === edge.source;
-    });
-    const isVertexAvailable = tree.some(({ source, vertex }) => {
-      return source === edge.vertex || vertex === edge.vertex;
-    });
-    return isSourceAvailable && isVertexAvailable;
+    const sourceSet = findSet(sets, edge.source);
+    const vertexSet = findSet(sets, edge.vertex);
+    if (sourceSet === vertexSet) return true;
+    else mergeSet(sets, sourceSet, vertexSet);
+    return false;
   };
 
   while (sortedEdges.length) {
